@@ -25,15 +25,13 @@ formatting 格式:
 *斜体* `*italic*` <br>
 **加粗** `**bold**` <br>
 ***斜体加粗*** `***italic and bold***` <br>
-下标上标 H~2~O~2~  `H~2~O~2~` H^2^ `H^2^` <br>
 表情符号 :smile: `:smile:` <br>
-下划线 <u>underscore</u> `<u>underscore</u>` <br>
 &nbsp;空格缩进 `&nbsp;` <br>
 
-<center>居中</center>   
+<p align='center'>居中</p>   
 
 ```html
-<center>居中</center>
+<p align='center'>居中</p> 
 ```
 
 <p align='right'>局右</p>
@@ -122,6 +120,14 @@ let arr = []
 
 插入流程图、时序图、饼图、数据库关系
 
+## 隐藏内容
+<!-- hidden-->
+`<!-- hidden-->`
+
+## 忽略 markdown 格式
+\*emphasis* <br>
+`\*emphasis*`
+
 ## latex 公式
 $$
 \lim_{x \to \infin}\frac{sin(t)}{x}
@@ -147,10 +153,12 @@ $\lim_{x \to \infin}\frac{sin(t)}{x}$
 选取文字，将链接粘贴过来后自文字动转为链接格式 
 
 
-### markdown preview enhanced 渲染器 [^1] {#code}
+### markdown preview enhanced 渲染器 [^1] {#renderer}
 [^1]: [markdown preview enhanced 官方文档链接](https://shd101wyy.github.io/markdown-preview-enhanced/#/zh-cn/)
 
-==高亮== `==text==`
+==高亮== `==text==` <br>
+下标上标 H~2~O~2~  `H~2~O~2~` H^2^ `H^2^` <br>
+下划线 <u>underscore</u> `<u>underscore</u>` <br>
 
 
 <font color='green'>绿色</font>
@@ -188,15 +196,8 @@ let arr = []
 **新段落**
 通过在文本行之间留一个空白行，可创建新段落。
 
-**隐藏内容**
-<!-- hidden-->
-`<!-- hidden-->`
 
-**忽略 markdown 格式**
-\*emphasis* <br>
-`\*emphasis*`
-
-[本地跳转至代码块](#code)
+[本地跳转至代码块](#renderer)
 
 ## typora 渲染器 [^3]
 [^3]: [typora formatting syntax link english](https://support.typora.io/style/) <br>
@@ -216,5 +217,5 @@ latex 的 \infin 无穷符号不支持 <br>
 html 的颜色和字体大小不支持
 
 ## 其他参考链接
-[basic syntax guide english](https://www.markdownguide.org/basic-syntax/)
+[basic syntax guide english](https://www.markdownguide.org/basic-syntax/)<br>
 [extended syntax guide english](https://www.markdownguide.org/extended-syntax/)
