@@ -200,7 +200,7 @@ let arr = []
 [本地跳转至代码块](#renderer)
 
 ## typora 渲染器 [^3]
-[^3]: [typora formatting syntax link english](https://support.typora.io/style/) <br>
+[^3]: [typora formatting syntax link english](https://support.typora.io/style/)
 
 下划线 `<u>text</u>` <br>
 高亮 `==text==` <br>
