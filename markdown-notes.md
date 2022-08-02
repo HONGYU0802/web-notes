@@ -173,6 +173,7 @@ $\lim_{x \to \infin}\frac{sin(t)}{x}$
     This is the admonition body
 
 **缩写注释**
+
 *[HTML]: Hyper Text Markup Language <br>
 *[W3C]: World Wide Web Consortium <br>
 The HTML specification
