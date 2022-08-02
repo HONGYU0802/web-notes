@@ -25,9 +25,9 @@ formatting 格式:
 *斜体* `*italic*` <br>
 **加粗** `**bold**` <br>
 ***斜体加粗*** `***italic and bold***` <br>
-**下标上标** H~2~O~2~  `H~2~O~2~` H^2^ `H^2^` <br>
-**表情符号** :smile: `:smile:` <br>
-**下划线** <u>underscore</u> `<u>underscore</u>` <br>
+下标上标 H~2~O~2~  `H~2~O~2~` H^2^ `H^2^` <br>
+表情符号 :smile: `:smile:` <br>
+下划线 <u>underscore</u> `<u>underscore</u>` <br>
 &nbsp;空格缩进 `&nbsp;` <br>
 
 <center>居中</center>   
@@ -41,19 +41,6 @@ formatting 格式:
 ```html
 <p align='right'>局右</p>
 ```
-
-<font color='green'>绿色</font>
-
-```html
-<font color='green'>绿色</font>
-```
-
-<font size='20'>字体大小</font>
-
-```html
-<font size='20'>字体大小</font>
-```
-
 
 >引用
 >>嵌套引用
@@ -102,7 +89,7 @@ Content [^1]
 
 `- [x] task1`
 
-## 代码块 {#code}
+## 代码块
 ```javascript
 const obj = {}
 let arr = []
@@ -126,10 +113,8 @@ let arr = []
 `[outer link text](link)` （注意外部链接会使用默认浏览器打开）
 
 <http://support.html>
-<lihongyu_work@163.com>
+<hongyu.0802@gmail.com>
 `<auto link>` （注意自动链接会使用默认浏览器打开，邮件会使用默认邮件打开）
-
-[本地跳转至代码块](#code)
 
 ## 图片
 ![图片描述](https://img0.baidu.com/it/u=2098311615,833819932&fm=253&fmt=auto&app=120&f=PNG?w=834&h=608)<br>
@@ -162,10 +147,24 @@ $\lim_{x \to \infin}\frac{sin(t)}{x}$
 选取文字，将链接粘贴过来后自文字动转为链接格式 
 
 
-### markdown preview enhanced 渲染器 [^1]
+### markdown preview enhanced 渲染器 [^1] {#code}
 [^1]: [markdown preview enhanced 官方文档链接](https://shd101wyy.github.io/markdown-preview-enhanced/#/zh-cn/)
 
 ==高亮== `==text==`
+
+
+<font color='green'>绿色</font>
+
+```html
+<font color='green'>绿色</font>
+```
+
+<font size='20'>字体大小</font>
+
+```html
+<font size='20'>字体大小</font>
+```
+
 
 **劝告**
 
@@ -186,18 +185,6 @@ let arr = []
 ```
 ` ```language  {.line-numbers} code here ``` ` 
 
-**表格**
-| column1 | column2 | column3 |
-| :------ | :-----: | ------: |
-| row1    |  row1   |    row1 |
-| row2    |  row2   |    row2 |
-```markdown 
-| column1 | column2 | column3 |
-| :------ | :-----: | ------: |
-| row1    |  row1   |    row1 |
-| row2    |  row2   |    row2 |
-```
-
 **新段落**
 通过在文本行之间留一个空白行，可创建新段落。
 
@@ -208,6 +195,8 @@ let arr = []
 **忽略 markdown 格式**
 \*emphasis* <br>
 `\*emphasis*`
+
+[本地跳转至代码块](#code)
 
 ## typora 渲染器 [^3]
 [^3]: [typora formatting syntax link english](https://support.typora.io/style/) <br>
@@ -224,6 +213,7 @@ let arr = []
 不支持高亮 ==高亮== <br>
 不支持回车换行 <br>
 latex 的 \infin 无穷符号不支持 <br>
+html 的颜色和字体大小不支持
 
 ## 其他参考链接
 [basic syntax guide english](https://www.markdownguide.org/basic-syntax/)
