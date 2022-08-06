@@ -73,7 +73,14 @@ formatting 格式:
 
 `1. item` （注意随便什么数字都不影响序号正确，数组和点中间使用\反斜杠来转义）
 
-**注脚**
+**任务列表**
+- [x] task1
+- [ ] task2
+
+`- [x] task1`
+
+
+## 注脚
 Content [^2]
 [^2]: Hi! This is a footnote
 ```
@@ -81,11 +88,6 @@ Content [^1]
 [^1]: Hi! This is a footnote
 ```
 
-**任务列表**
-- [x] task1
-- [ ] task2
-
-`- [x] task1`
 
 ## 代码块
 ```javascript
