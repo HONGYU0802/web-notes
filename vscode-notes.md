@@ -88,9 +88,6 @@ output
 debug console
 terminal
 
-## Plugin 插件
-
-
 ## Shortcut 快捷方式
 
 控制屏幕 View
@@ -99,6 +96,7 @@ terminal
 cmd - 缩小
 cmd + 放大
 cmd sft w 关闭当前窗口
+opt b 隐藏侧边栏
 ```
 
 控制编辑区 Editor
@@ -114,7 +112,7 @@ opt sft 上下拷贝文本，左右选取一段连续的内容
 opt cmd 上下添加光标
 opt click 创建多个光标
 
-opt sft f 格式化当前文件的全部代码
+opt sft f 格式化当前文件的全部代码????
 cmd k cmd f 格式化当前行代码
 
 cmd sft a 块注释
@@ -129,6 +127,10 @@ f8 快速跳转到错误提示行
 ## Snippets 片段
 
 通过简写提供完整的代码块，加速构建文件
+```
+html 构建一个 html 基本代码
+trycatch 构建一个 try-catch 的语法块
+```
 
 ## 相关术语
 
@@ -139,3 +141,6 @@ intelliSense 当你打出 . 时，会运行一个 JS 语言服务
 keyboard shortcut 查看和编辑全部的快捷方式
 
 editor background 快速熟悉 vscode 技巧
+
+
+## Plugin 插件
