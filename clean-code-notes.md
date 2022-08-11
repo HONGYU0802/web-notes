@@ -477,6 +477,958 @@ console.log(
 
 [back to the top](#airbnb-style)
 
+在使用匿名函数和行内的回调函数时，使用箭头函数，因为它可以使用执行上下文的 this，语法也更简洁
+
+如果函数结构相当复杂则挪出去声明一个自己的函数表达式
+
+永远给参数加上括号，保持一致性，也方便后续添加和移除参数
+
+```JS
+// good 隐式返回
+[1, 2, 3].map((number) => `A string containing the ${number + 1}.`);
+
+// good 显示返回
+[1, 2, 3].map((number) => {
+  const nextNumber = number + 1;
+  return `A string containing the ${nextNumber}.`;
+});
+
+// good 返回对象
+[1, 2, 3].map((number, index) => ({
+  [index]: number,
+}));
+
+// 函数没有隐式返回，只产生一个副作用
+function foo(callback) {
+  const val = callback();
+  if (val === true) {
+    // Do something if callback returns true
+  }
+}
+
+let bool = false
+
+// bad 赋值操作，返回值是被赋值后最新的值
+foo(() => bool = true);
+
+// good 表达式用花括号括起来
+foo(() => {
+  bool = true;
+});
+
+// bad
+['get', 'post', 'put'].map((httpMethod) => Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod,
+  )
+);
+
+// good 当返回表达式横跨多行时，使用圆括号包裹增加可读性
+['get', 'post', 'put'].map((httpMethod) => (
+  Object.prototype.hasOwnProperty.call(
+    httpMagicObjectWithAVeryLongName,
+    httpMethod,
+  )
+));
+
+// bad
+(foo) =>
+  bar;
+
+(foo) =>
+  (bar);
+
+// good
+(foo) => bar;
+(foo) => (bar);
+(foo) => (
+   bar
+)
+```
+
+避免直接操作原型，使用类是更简洁的、更好理解的
+
+```JS
+// bad
+function Queue(contents = []) {
+  this.queue = [...contents];
+}
+Queue.prototype.pop = function () {
+  const value = this.queue[0];
+  this.queue.splice(0, 1);
+  return value;
+};
+
+// good
+class Queue {
+  constructor(contents = []) {
+    this.queue = [...contents];
+  }
+  pop() {
+    const value = this.queue[0];
+    this.queue.splice(0, 1);
+    return value;
+  }
+}
+```
+
+使用类继承，避免原型继承
+
+```JS
+// bad
+const inherits = require('inherits');
+function PeekableQueue(contents) {
+  Queue.apply(this, contents);
+}
+inherits(PeekableQueue, Queue);
+PeekableQueue.prototype.peek = function () {
+  return this.queue[0];
+};
+
+// good
+class PeekableQueue extends Queue {
+  peek() {
+    return this.queue[0];
+  }
+}
+```
+
+通过返回 this 实现链式操作，减少重复代码
+
+```JS
+// bad
+Jedi.prototype.jump = function () {
+  this.jumping = true;
+  return true;
+};
+
+Jedi.prototype.setHeight = function (height) {
+  this.height = height;
+};
+
+const luke = new Jedi();
+luke.jump(); // => true
+luke.setHeight(20); // => undefined
+
+// good
+class Jedi {
+  jump() {
+    this.jumping = true;
+    return this;
+  }
+
+  setHeight(height) {
+    this.height = height;
+    return this;
+  }
+}
+
+const luke = new Jedi();
+
+luke.jump()
+  .setHeight(20);
+```
+
+避免不必要的构造函数
+
+```JS
+// bad
+class Jedi {
+  constructor() {}
+
+  getName() {
+    return this.name;
+  }
+}
+
+// bad
+class Rey extends Jedi {
+  constructor(...args) {
+    super(...args);
+  }
+}
+
+// good
+class Rey extends Jedi {
+  constructor(...args) {
+    super(...args);
+    this.name = 'Rey';
+  }
+}
+```
+
+避免复制类成员，只有最后一个生效，这属于一个 bug
+
+```JS
+// bad
+class Foo {
+  bar() { return 1; }
+  bar() { return 2; }
+}
+
+// good
+class Foo {
+  bar() { return 1; }
+}
+
+// good
+class Foo {
+  bar() { return 2; }
+}
+```
+
+永远使用 import/export，这是未来，它还可以转成其他的模块规范
+
+```JS
+// bad
+const AirbnbStyleGuide = require('./AirbnbStyleGuide');
+module.exports = AirbnbStyleGuide.es6;
+
+// ok
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+export default AirbnbStyleGuide.es6;
+
+// best
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+不要使用通配符 wildcard，这要求必须有一个 default export，不方便后续修改
+
+```JS
+// bad
+import * as AirbnbStyleGuide from './AirbnbStyleGuide';
+
+// good
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+```
+
+不要直接导出导入的模块，虽然很简洁，但是破坏了一致性
+
+```JS
+// bad
+export { es6 as default } from './AirbnbStyleGuide';
+
+// good
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+避免同一个路径的多次导入
+
+```JS
+// bad
+import foo from 'foo';
+// … some other imports … //
+import { named1, named2 } from 'foo';
+
+// good
+import foo, { named1, named2 } from 'foo';
+
+// good 导入多个变量时记得换行
+import foo, {
+  named1,
+  named2,
+} from 'foo';
+```
+
+避免导出可以重新赋值的变量
+
+```JS
+// bad
+let foo = 3;
+export { foo };
+
+// good
+const foo = 3;
+export { foo };
+```
+
+当只有一个导出内容时，使用默认导出，而不名字导出（鼓励文件什么时候都导出一个东西，这样更好阅读和维护）
+
+```JS
+// bad
+export function foo() {}
+
+// good
+export default function foo() {}
+```
+
+不要包含文件拓展名，这将成为硬代码 hardcode 不方便重构
+
+```JS
+// bad
+import foo from './foo.js';
+import bar from './bar.jsx';
+import baz from './baz/index.jsx';
+
+// good
+import foo from './foo';
+import bar from './bar';
+import baz from './baz';
+```
+
+使用 JS 内置的高阶函数代替 for-in for-of循环
+
+迭代数组 map() / every() / filter() / find() / findIndex() / reduce() / some() 
+
+生成数组 Object.keys() / Object.values() / Object.entries()
+
+```JS
+const numbers = [1, 2, 3, 4, 5];
+
+// bad
+let sum = 0;
+for (let num of numbers) {
+  sum += num;
+}
+sum === 15;
+
+// good forEach 命令式的迭代了数组
+let sum = 0;
+numbers.forEach((num) => {
+  sum += num;
+});
+sum === 15;
+
+// best 函数式的迭代了数组
+const sum = numbers.reduce((total, num) => total + num, 0);
+sum === 15;
+
+// bad
+const increasedByOne = [];
+for (let i = 0; i < numbers.length; i++) {
+  increasedByOne.push(numbers[i] + 1);
+}
+
+// good
+const increasedByOne = [];
+numbers.forEach((num) => {
+  increasedByOne.push(num + 1);
+});
+
+// best (keeping it functional)
+const increasedByOne = numbers.map((num) => num + 1);
+```
+
+避免使用生成器函数，没必要
+
+```JS
+// good
+function* foo() {
+  // ...
+}
+
+// good
+const foo = function* () {
+  // ...
+};
+```
+
+使用指数运算符
+
+```JS
+// bad
+const binary = Math.pow(2, 10);
+
+// good
+const binary = 2 ** 10;
+```
+
+用 const let 声明变量，避免污染全局空间
+
+使用 const let 声明每一个变量和赋值，不用担心切换符号`;` `,`，方便做断点测试
+
+将所有 const let 分别组织在一起
+
+```JS
+// bad
+const items = getItems(),
+    goSportsTeam = true,  // 这里是逗号
+    dragonBall = 'z';
+
+// bad
+const items = getItems(),
+    goSportsTeam = true;  // 这里是分号
+    dragonBall = 'z';
+
+// good
+const items = getItems();
+const goSportsTeam = true;
+const dragonBall = 'z';
+
+// bad
+let i;
+const items = getItems();
+let dragonBall;
+const goSportsTeam = true;
+let len;
+
+// good
+const goSportsTeam = true;
+const items = getItems();
+let dragonBall;
+let i;
+let length;
+```
+
+将变量声明在合理的位置，因为 const let 是块级作用域的
+
+```JS
+// bad
+function checkName(hasName) {
+  const name = getName();
+
+  if (hasName === 'test') {
+    return false;
+  }
+
+  if (name === 'test') {
+    this.setName('');
+    return false;
+  }
+
+  return name;
+}
+
+// good
+function checkName(hasName) {
+  if (hasName === 'test') {
+    return false;
+  }
+
+  const name = getName();
+
+  if (name === 'test') {
+    this.setName('');
+    return false;
+  }
+
+  return name;
+}
+```
+
+不要使用链式赋值变量，会隐式的声明成全局变量
+
+```JS
+// bad
+(function example() {
+  let a = b = c = 1;
+  // 等价于 let a = ( b = ( c = 1 ) ); 关键字只对 a 生效，b c 变成了全局变量
+}());
+
+console.log(a); // throws ReferenceError
+console.log(b); // 1
+console.log(c); // 1
+
+// good
+(function example() {
+  let a = 1;
+  let b = a;
+  let c = a;
+}());
+
+console.log(a); // throws ReferenceError
+console.log(b); // throws ReferenceError
+console.log(c); // throws ReferenceError
+
+// the same applies for `const`
+```
+
+禁止使用自增、自减操作符，使用 +=、-= 操作符代替（易受自动插入分号影响，+=、-= 更具表达力，避免了非故意的预先自增自减）
+
+```JS
+// bad
+
+const array = [1, 2, 3];
+let num = 1;
+num++;
+--num;
+
+let sum = 0;
+let truthyCount = 0;
+for (let i = 0; i < array.length; i++) {
+  let value = array[i];
+  sum += value;
+  if (value) {
+    truthyCount++;
+  }
+}
+
+// good
+
+const array = [1, 2, 3];
+let num = 1;
+num += 1;
+num -= 1;
+
+const sum = array.reduce((a, b) => a + b, 0);
+const truthyCount = array.filter(Boolean).length;
+```
+
+不要在赋值符号后面换行，必要时使用圆括号包裹
+
+```JS
+// bad 后面的代码会跟着缩进，这不是我们想要的
+const foo =
+  superLongLongLongLongLongLongLongLongFunctionName(); 
+
+// good
+const foo = (
+  superLongLongLongLongLongLongLongLongFunctionName()
+);
+
+// bad
+const foo
+  = 'superLongLongLongLongLongLongLongLongString';
+
+// good
+const foo = 'superLongLongLongLongLongLongLongLongString';
+```
+
+不要存在未使用的变量在代码里，这会给阅读带来障碍
+
+```JS
+// bad
+
+var some_unused_var = 42;
+
+// Write-only variables are not considered as used.
+var y = 10;
+y = 5;
+
+// A read for a modification of itself is not considered as used.
+var z = 0;
+z = z + 1;
+
+// Unused function arguments.
+function getX(x, y) {
+    return x;
+}
+
+// good
+
+function getXPlusY(x, y) {
+  return x + y;
+}
+
+var x = 1;
+var y = a + 2;
+
+alert(getXPlusY(x, y));
+
+// 'type' is ignored even if unused because it has a rest property sibling.
+// This is a form of extracting an object that omits the specified keys.
+var { type, ...coords } = data;
+// 'coords' is now the 'data' object without its 'type' property.
+```
+
+
+Objects evaluate to true
+Undefined evaluates to false
+Null evaluates to false
+Booleans evaluate to the value of the boolean
+Numbers evaluate to false if +0, -0, or NaN, otherwise true
+Strings evaluate to false if an empty string '', otherwise true
+
+
+```JS
+if ([0] && []) {
+  // true
+  // an array (even an empty one) is an object, objects will evaluate to true
+}
+```
+
+布尔类型的值直接用，字符串和数字要明确的比较
+
+```JS
+// bad
+if (isValid === true) {
+  // ...
+}
+
+// good
+if (isValid) {
+  // ...
+}
+
+// bad
+if (name) {
+  // ...
+}
+
+// good
+if (name !== '') {
+  // ...
+}
+
+// bad
+if (collection.length) {
+  // ...
+}
+
+// good
+if (collection.length > 0) {
+  // ...
+}
+```
+
+switch 的 case 和 default 子句需要用花括号包裹，形成一个块级作用域，否则多个字句定义相同的内容会出问题
+
+```JS
+// bad
+switch (foo) {
+  case 1:
+    let x = 1;
+    break;
+  case 2:
+    const y = 2;
+    break;
+  case 3:
+    function f() {
+      // ...
+    }
+    break;
+  default:
+    class C {}
+}
+
+// good
+switch (foo) {
+  case 1: {
+    let x = 1;
+    break;
+  }
+  case 2: {
+    const y = 2;
+    break;
+  }
+  case 3: {
+    function f() {
+      // ...
+    }
+    break;
+  }
+  case 4:
+    bar();
+    break;
+  default: {
+    class C {}
+  }
+}
+```
+
+三元运算符应该独占一行，不应嵌套
+
+```JS
+// bad
+const foo = maybe1 > maybe2
+  ? "bar"
+  : value1 > value2 ? "baz" : null;
+
+// split into 2 separated ternary expressions
+const maybeNull = value1 > value2 ? 'baz' : null;
+
+// better
+const foo = maybe1 > maybe2
+  ? 'bar'
+  : maybeNull;
+
+// best
+const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+```
+
+避免一个不需要的三元运算表达式
+
+```JS
+// bad
+const foo = a ? a : b;
+const bar = c ? true : false;
+const baz = c ? false : true;
+
+// good
+const foo = a || b;
+const bar = !!c;
+const baz = !c;
+```
+
+有多个操作符运算时 / % * 建议用括号包裹，因为它们的优先级比较容易模糊
+
+```JS
+// bad
+const foo = a && b < 0 || c > 0 || d + 1 === 0;
+
+// bad
+const bar = a ** b - 5 % d;
+
+// bad
+// one may be confused into thinking (a || b) && c
+if (a || b && c) {
+  return d;
+}
+
+// bad
+const bar = a + b / c * d;
+
+// good
+const foo = (a && b < 0) || c > 0 || (d + 1 === 0);
+
+// good
+const bar = a ** b - (5 % d);
+
+// good
+if (a || (b && c)) {
+  return d;
+}
+
+// good
+const bar = a + (b / c) * d;
+```
+
+没有块时语句的位置
+
+```JS
+// bad
+if (test)
+  return false;
+
+// good
+if (test) return false;
+
+// good
+if (test) {
+  return false;
+}
+
+// bad
+function foo() { return false; }
+
+// good
+function bar() {
+  return false;
+}
+```
+
+if 的 else 要和它最后一个闭合花括号放在一行
+
+```JS
+// bad
+if (test) {
+  thing1();
+  thing2();
+}
+else {
+  thing3();
+}
+
+// good
+if (test) {
+  thing1();
+  thing2();
+} else {
+  thing3();
+}
+```
+
+如果 if 总是 return，那么它后续的 else 就是无用的
+
+```JS
+// bad
+function foo() {
+  if (x) {
+    return x;
+  } else {
+    return y;
+  }
+}
+
+// good
+function foo() {
+  if (x) {
+    return x;
+  }
+
+  return y;
+}
+
+// bad
+function cats() {
+  if (x) {
+    return x;
+  } else if (y) {
+    return y;
+  }
+}
+
+// good
+function cats() {
+  if (x) {
+    return x;
+  }
+
+  if (y) {
+    return y;
+  }
+}
+
+// bad
+function dogs() {
+  if (x) {
+    return x;
+  } else {
+    if (y) {
+      return y;
+    }
+  }
+}
+
+// good
+function dogs(x) {
+  if (x) {
+    if (z) {
+      return y;
+    }
+  } else {
+    return z;
+  }
+}
+```
+
+当判断条件太长，换行时将逻辑操作符放在前面，增加可读性
+
+```JS
+// bad
+if ((foo === 123 || bar === 'abc') && doesItLookGoodWhenItBecomesThatLong() && isThisReallyHappening()) {
+  thing1();
+}
+
+// good
+if (
+  (foo === 123 || bar === 'abc')
+  && doesItLookGoodWhenItBecomesThatLong()
+  && isThisReallyHappening()
+) {
+  thing1();
+}
+
+// bad
+if (foo === 123 &&
+  bar === 'abc') {
+  thing1();
+}
+
+// bad
+if (foo === 123
+  && bar === 'abc') {
+  thing1();
+}
+
+// bad
+if (
+  foo === 123 &&
+  bar === 'abc'
+) {
+  thing1();
+}
+
+// good
+if (
+  foo === 123
+  && bar === 'abc'
+) {
+  thing1();
+}
+
+// good
+if (foo === 123 && bar === 'abc') {
+  thing1();
+}
+```
+
+不要使用选择操作符代替逻辑语句
+
+```JS
+// bad
+!isRunning && startRunning();
+
+// good
+if (!isRunning) {
+  startRunning();
+}
+```
+
+多行注释请使用 /** ... */
+
+```JS
+// bad
+// make() returns a new element
+// based on the passed in tag name
+
+// good
+/**
+ * make() returns a new element
+ * based on the passed-in tag name
+ */
+```
+
+当行注释放在目标的上面，除非是块内第一行，否则前面要空一行
+
+所有的注释内容前都要有一个空格
+
+```JS
+// bad
+const active = true;  // is current tab
+
+// good
+// is current tab
+const active = true;
+
+// bad
+function getType() {
+  console.log('fetching type...');
+  // set the default type to 'no type'
+  const type = this.type || 'no type';
+
+  return type;
+}
+
+// good
+function getType() {
+  console.log('fetching type...');
+
+  // set the default type to 'no type'
+  const type = this.type || 'no type';
+
+  return type;
+}
+
+// also good
+function getType() {
+  // set the default type to 'no type'
+  const type = this.type || 'no type';
+
+  return type;
+}
+```
+
+有 FIXME TODO 前缀的注释指出需要重看的问题或者需要实现的内容
+
+```JS
+// FIXME: shouldn’t use a global here
+// TODO: total should be configurable by an options param
+```
+
+
+
+```JS
+```
+
+
+
+```JS
+```
+
+
 
 ```JS
 ```
@@ -492,20 +1444,20 @@ console.log(
 ```
 
 
-```JS
-```
-
 
 ```JS
 ```
 
 
+
 ```JS
 ```
 
 
+
 ```JS
 ```
+
 
 
 ```JS
